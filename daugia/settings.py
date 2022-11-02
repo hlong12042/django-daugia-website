@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'e=y_xm=%e_une4$8s@*#fel!-ldha=cvgba+^o@wt@v*3l-eap'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -111,8 +115,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'mssql',
         'NAME': 'DAUGIA',
-        'USER': 'daugia',
-        'PASSWORD': 'Aa@123456#',
+        'USER': os.getenv("DAUGIA_DB_USER"),
+        'PASSWORD': os.getenv("DAUGIA_DB_PASSWORD"),
         'HOST': '127.0.0.1',
         'PORT': '1433',
         'OPTION': {
@@ -190,7 +194,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_FROM = 'hoanglongmap2468@gmail.com'
 EMAIL_HOST_USER = 'hoanglongmap2468@gmail.com'
-EMAIL_HOST_PASSWORD = 'vkxosyzrkrzaecla'
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
