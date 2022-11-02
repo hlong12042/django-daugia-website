@@ -1,0 +1,152 @@
+{% extends 'auction/base.html' %}
+
+{% block title %}
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="/">Website Đấu giá trực tuyến PTIT</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <form action="/search/1" method="get" class="d-flex">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Tìm kiếm" name="keyword">
+                        <button class="btn btn-outline-secondary">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </ul>
+            {% if not request.session.email%}
+            <form class="d-flex" action="/login" method="get">
+                <button class="btn btn-outline-dark" type="submit">
+                    Đăng nhập
+                </button>
+            </form>
+            <form class="d-flex" action="/register" method="get">
+                <button class="btn btn-secondary" type="submit">
+                    Đăng ký
+                </button>
+            </form>
+            {% endif %}
+
+            {% if request.session.email %}
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/info/{{request.session.email}}">{{request.session.email}}</a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="/info/{{request.session.email}}">Thông tin cá nhân</a></li>
+                    <li><a class="dropdown-item" href="/change-password">Đổi mật khẩu</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="/history/{{email}}">Phiên đã tạo</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
+                </ul>
+            </div>
+            {% endif%}
+        </div>
+    </div>
+</nav>
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Đấu giá PTIT</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Bao uy tín - Giao dịch an toàn</p>
+        </div>
+    </div>
+</header>
+
+<!-- Section-->
+<div class="container">
+    <section class="py-5">
+        <div class="row">
+            <div class="card border-secondary mb-8">
+                <div class="card-body">
+                    <h3 class="my-3">Tạo buổi đấu giá</h3>
+                    <form action="/create-auction" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-floating mb-3">
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="container-fluid p-0">
+                                <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                                    {{ message }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label for="floatingInput">Hình nền</label>
+                                <div class="form-floating mb-3">
+                                    <img height="300" id="preview-img"
+                                        src="https://dummyimage.com/300x300/dee2e6/6c757d.jpg" alt="Upload Image">
+                                </div>
+                                <div class="form-floating mb-3">
+                                    {{detail.img.media}}
+                                    {{detail.img.as_p}}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="floatingInput">Tiêu đề</label>
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="nameInput" name="name" required>
+                                </div>
+
+                                <label for="floatingInput">Giá khởi điểm</label>
+                                <div class="form-floating mb-3">
+                                    <input type="number" class="form-control" id="priceInput" name="price" required>
+                                </div>
+
+                                <label for="floatingInput">Thời điểm bắt đầu</label>
+                                <div class="form-floating mb-3">
+                                    <input type="datetime-local" class="form-control" id="beginInput" name="begin"
+                                        required>
+                                </div>
+
+                                <label for="floatingInput">Thời điểm kết thúc</label>
+                                <div class="form-floating mb-3">
+                                    <input type="datetime-local" class="form-control" id="endInput" name="end" required>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <div class="form-floating">
+                                    <textarea class="form-control" placeholder="Leave a comment here"
+                                        id="floatingTextarea" style="height: 300px;" name="detail"></textarea>
+                                    <label for="floatingTextarea"> Thông tin vật phẩm </label>
+                                </div>
+                                <br>
+                                <button class="btn btn-outline-primary text-uppercase mb-3">
+                                    <i class="bi bi-plus-circle"></i> Tạo </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+{% block script%}
+<script>
+    $("#id_img").change(function () {
+        var output = document.getElementById('preview-img');
+        output.src = URL.createObjectURL(event.target.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    });
+</script>
+{% endblock%}
